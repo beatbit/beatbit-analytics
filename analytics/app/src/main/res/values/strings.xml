@@ -32,9 +32,11 @@
 
     <string name="action_example">Example action</string>
 
+    <string name="past">History</string>
+    <string name="live">Live Heart Rate</string>
     <string-array name="nav_items">
-        <item name="live">Live Heart Rate</item>
-        <item name="past">History</item>
+        <item name="live">@string/live</item>
+        <item name="past">@string/past</item>
     </string-array>
 
 <!-- TODO: Remove or change this placeholder text -->

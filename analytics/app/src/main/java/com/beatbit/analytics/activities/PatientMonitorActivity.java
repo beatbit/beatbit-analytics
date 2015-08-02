@@ -11,9 +11,12 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.support.v4.widget.DrawerLayout;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 
+import com.beatbit.analytics.fragments.AverageRatesFragment;
 import com.beatbit.analytics.fragments.LiveDataFragment;
 import com.beatbit.analytics.R;
 
@@ -32,11 +35,25 @@ public class PatientMonitorActivity extends ActionBarActivity {
 
         ListView nav = (ListView) findViewById(R.id.lv_nav);
 
-        String[] items = getResources().getStringArray(R.array.nav_items);
+        final String[] items = getResources().getStringArray(R.array.nav_items);
 
         nav.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, items));
 
         setUpDrawerLayout();
+
+        nav.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                if (items[position].equals(getString(R.string.live))) {
+                    setContent(new LiveDataFragment());
+                }
+                else if(items[position].equals(getString(R.string.past))) {
+                    setContent(new AverageRatesFragment());
+                }
+
+                drawerLayout.closeDrawer(Gravity.LEFT);
+            }
+        });
 
         setContent(new LiveDataFragment());
     }
@@ -45,6 +62,7 @@ public class PatientMonitorActivity extends ActionBarActivity {
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawerLayout.setStatusBarBackgroundColor(Color.BLACK);
         drawerLayout.setScrimColor(Color.BLACK);
+
         toggle = new ActionBarDrawerToggle(this, drawerLayout, R.string.navigation_drawer_open, R.string.navigation_drawer_close) {
 
             @Override
