@@ -17,6 +17,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.beatbit.analytics.fragments.AverageRatesFragment;
+import com.beatbit.analytics.fragments.EmergencyLogFragment;
 import com.beatbit.analytics.fragments.LiveDataFragment;
 import com.beatbit.analytics.R;
 
@@ -49,6 +50,9 @@ public class PatientMonitorActivity extends ActionBarActivity {
                 }
                 else if(items[position].equals(getString(R.string.past))) {
                     setContent(new AverageRatesFragment());
+                }
+                else if(items[position].equals(getString(R.string.emergencies))) {
+                    setContent(new EmergencyLogFragment());
                 }
 
                 drawerLayout.closeDrawer(Gravity.LEFT);
