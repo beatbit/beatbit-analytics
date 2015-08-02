@@ -20,8 +20,8 @@
     <string name="iNeedHelp">I need help!</string>
     <string name="imOk">I\'m ok!</string>
     <string name="save">Save</string>
-    <string name="title_activity_patient">PatientActivity</string>
-    <string name="title_activity_patient_monitor">PatientMonitorActivity</string>
+    <string name="title_activity_patient">Patients</string>
+    <string name="title_activity_patient_monitor">Patient Analysis</string>
 
     <string name="title_section1">Section 1</string>
     <string name="title_section2">Section 2</string>

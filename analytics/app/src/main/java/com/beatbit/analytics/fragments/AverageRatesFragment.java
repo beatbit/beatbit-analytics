@@ -6,12 +6,14 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import com.beatbit.analytics.AverageHeartRate;
 import com.beatbit.analytics.R;
+import com.beatbit.analytics.activities.PatientMonitorActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,8 +39,14 @@ public class AverageRatesFragment extends Fragment {
         View inflatedView = inflater.inflate(R.layout.fragment_average_rates, container, false);
 
         ListView lv = ((ListView) inflatedView.findViewById(R.id.lv_average_rates));
-
         lv.setAdapter(new AverageRateAdapter());
+        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                // Transition to the graph fragment
+                ((PatientMonitorActivity) getActivity()).setContent(new HeartRateOverDayFragment());
+            }
+        });
 
         return inflatedView;
     }

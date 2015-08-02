@@ -12,6 +12,7 @@ import android.view.animation.Animation;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.beatbit.analytics.GraphCreator;
 import com.beatbit.analytics.HeartBeatListener;
 import com.beatbit.analytics.HeartRate;
 import com.beatbit.analytics.R;
@@ -20,6 +21,7 @@ import com.jjoe64.graphview.GridLabelRenderer;
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -54,6 +56,8 @@ public class LiveDataFragment extends Fragment implements HeartBeatListener {
 
         graph = (GraphView) inflatedView.findViewById(R.id.graph);
 
+        heartRates = new ArrayList<HeartRate>();
+
         DataPoint[] data = {
                 new DataPoint(0, 40),
                 new DataPoint(1, 41),
@@ -65,29 +69,11 @@ public class LiveDataFragment extends Fragment implements HeartBeatListener {
                 new DataPoint(100, 57)
         };
 
-        heartRates = new LinkedList<HeartRate>();
-
-        int white = getResources().getColor(android.R.color.white);
-
-        graph.getGridLabelRenderer().setHorizontalAxisTitle("Time");
-        graph.getGridLabelRenderer().setVerticalAxisTitle("Heart Rate");
-
         series = new LineGraphSeries<DataPoint>(data);
+        
+        // Create/style the graph to our standards
+        GraphCreator.create(series, getActivity(), graph);
 
-        series.setColor(getResources().getColor(R.color.colorPrimary));
-
-        GridLabelRenderer renderer = graph.getGridLabelRenderer();
-
-        renderer.setHorizontalLabelsColor(white);
-        renderer.setVerticalLabelsColor(white);
-        renderer.setVerticalAxisTitleColor(white);
-        renderer.setVerticalLabelsColor(white);
-        renderer.setHorizontalAxisTitleColor(white);
-        renderer.setGridColor(white);
-        renderer.setPadding(15);
-
-
-        graph.addSeries(series);
 
         for(DataPoint point : data) {
             heartRates.add(new HeartRate((int)point.getY(), (long)point.getX()));

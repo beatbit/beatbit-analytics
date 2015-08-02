@@ -95,7 +95,7 @@ public class PatientMonitorActivity extends ActionBarActivity {
 
     }
 
-    private void setContent(Fragment fragment) {
+    public void setContent(Fragment fragment) {
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction()
                 .replace(R.id.container, fragment)
