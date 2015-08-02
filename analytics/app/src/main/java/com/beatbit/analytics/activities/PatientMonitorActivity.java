@@ -121,6 +121,7 @@ public class PatientMonitorActivity extends ActionBarActivity {
     public void setContent(Fragment fragment) {
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction()
+                .addToBackStack("")
                 .replace(R.id.container, fragment)
                 .commit();
     }
