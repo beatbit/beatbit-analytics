@@ -17,6 +17,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.beatbit.analytics.AzureClient;
+import com.beatbit.analytics.Emergency;
 import com.beatbit.analytics.Patient;
 import com.beatbit.analytics.R;
 
@@ -35,12 +36,11 @@ public class PatientActivity extends ActionBarActivity {
         setContentView(R.layout.activity_patient);
 
         try {
-
             // Read all patients from azure
             new AzureClient(this).getPatients(new AzureClient.AzureClientListener() {
                 @Override
-                public void onPatientsLoaded(final List<Patient> patients) {
-                    PatientActivity.this.patients = patients;
+                public void onLoaded(final Object object) {
+                    PatientActivity.this.patients = (List<Patient>) object;
 
                     ListView patientListView = (ListView) findViewById(R.id.lv_patients);
                     patientListView.setAdapter(adapter = new PatientAdapter(PatientActivity.this));

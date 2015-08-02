@@ -33,7 +33,9 @@
     <string name="action_example">Example action</string>
 
     <string name="emergencies">Emergencies</string>
-    
+
+    <string name="date">Date</string>
+    <string name="description">Description</string>
     <string name="past">Heart Log</string>
     <string name="live">Live Heart Rate</string>
     <string name="patients">My Patients</string>

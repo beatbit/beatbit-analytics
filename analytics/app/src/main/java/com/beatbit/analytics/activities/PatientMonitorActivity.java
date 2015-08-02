@@ -19,6 +19,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.beatbit.analytics.AzureClient;
+import com.beatbit.analytics.Emergency;
 import com.beatbit.analytics.Patient;
 import com.beatbit.analytics.fragments.AverageRatesFragment;
 import com.beatbit.analytics.fragments.EmergencyLogFragment;
@@ -38,13 +39,18 @@ public class PatientMonitorActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_patient_monitor);
 
+        patient = (Patient)getIntent().getSerializableExtra("patient");
+
         try {
-            new AzureClient(this);
+//            Emergency ems = new Emergency();
+//            ems.setPatientid(patient.getId());
+//            ems.setDescription("this is an emergency");
+//
+//            new AzureClient(this).addEmergency(ems);
         } catch(Exception e) {
             Log.e("analytics", Log.getStackTraceString(e));
         }
 
-        patient = (Patient)getIntent().getSerializableExtra("patient");
 
         title = getTitle();
 
@@ -129,4 +135,7 @@ public class PatientMonitorActivity extends ActionBarActivity {
         return true;
     }
 
+    public Patient getPatient() {
+        return patient;
+    }
 }

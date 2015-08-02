@@ -4,10 +4,9 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import com.google.gson.GsonBuilder;
 import com.microsoft.windowsazure.mobileservices.MobileServiceClient;
-import com.microsoft.windowsazure.mobileservices.MobileServiceException;
 import com.microsoft.windowsazure.mobileservices.http.ServiceFilterResponse;
+import com.microsoft.windowsazure.mobileservices.table.MobileServiceTable;
 import com.microsoft.windowsazure.mobileservices.table.TableOperationCallback;
 
 import java.util.ArrayList;
@@ -19,12 +18,58 @@ import java.util.List;
 public class AzureClient {
     private static final String TAG = "analytics";
     private MobileServiceClient azureClient;
+    private MobileServiceTable<Emergency> emergencyTable;
+    private MobileServiceTable<Patient> patientTable;
 
     public AzureClient(Context context) throws Exception {
         azureClient = new MobileServiceClient(
                 "https://beatbit.azure-mobile.net/",
                 "RqIjTJBDLvuoMcTlsTBDtWkqTREmcJ72",
                 context);
+
+        List<Emergency> ems = new ArrayList<Emergency>();
+        ems.add(new Emergency("5/18/15", "a bad one"));
+
+        patientTable = azureClient.getTable(Patient.class);
+        emergencyTable = azureClient.getTable(Emergency.class);
+    }
+
+    public void updateEmergency(Emergency emergency) {
+        emergencyTable.update(emergency);
+    }
+
+    public void addEmergency(Emergency emergency) {
+        emergencyTable.insert(emergency);
+    }
+
+    public void updatePatient(Patient patient) {
+        patientTable.update(patient);
+    }
+
+    public void getEmergencies(final Patient patient, final AzureClientListener listener) throws Exception {
+
+        new AsyncTask<Void, Void, List<Emergency>>() {
+
+            @Override
+            protected List<Emergency> doInBackground(Void... params) {
+                List<Emergency> emergencies = null;
+
+                try {
+                    emergencies = emergencyTable.where().field("patientid").eq(patient.getId()).execute().get();
+                } catch(Exception e) {
+                    Log.e(TAG, Log.getStackTraceString(e));
+                }
+
+                return emergencies;
+            }
+
+            @Override
+            protected void onPostExecute(List<Emergency> emergencies) {
+                super.onPostExecute(emergencies);
+
+                listener.onLoaded(emergencies);
+            }
+        }.execute();
     }
 
     public void getPatients(final AzureClientListener listener) throws Exception {
@@ -35,7 +80,7 @@ public class AzureClient {
                 List<Patient> patients = new ArrayList<Patient>();
 
                 try {
-                    patients = azureClient.getTable(Patient.class).execute().get();
+                    patients = patientTable.execute().get();
                 } catch(Exception e) {
                     Log.e(TAG, Log.getStackTraceString(e));
                 }
@@ -46,19 +91,18 @@ public class AzureClient {
             @Override
             protected void onPostExecute(List<Patient> patients) {
                 super.onPostExecute(patients);
-                listener.onPatientsLoaded(patients);
+                listener.onLoaded(patients);
             }
         }.execute();
     }
 
     public void addPatient(Patient patient) {
-        azureClient.getTable(Patient.class).insert(patient, new TableOperationCallback<Patient>() {
+        patientTable.insert(patient, new TableOperationCallback<Patient>() {
             @Override
             public void onCompleted(Patient entity, Exception exception, ServiceFilterResponse response) {
-                if(exception == null) {
+                if (exception == null) {
                     Log.d(TAG, "worked");
-                }
-                else {
+                } else {
                     Log.e(TAG, Log.getStackTraceString(exception));
                 }
             }
@@ -66,6 +110,6 @@ public class AzureClient {
     }
 
     public static interface AzureClientListener {
-        void onPatientsLoaded(List<Patient> patients);
+        void onLoaded(Object obj);
     }
 }
