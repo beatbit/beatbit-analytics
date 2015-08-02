@@ -1,11 +1,12 @@
 package com.beatbit.analytics;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
  * Created by Daniel on 8/1/2015.
  */
-public class Patient {
+public class Patient implements Serializable {
     private String name;
     private int heartrate;
 

@@ -45,15 +45,7 @@
     <com.jjoe64.graphview.GraphView
         android:layout_width="match_parent"
         android:layout_height="311dp"
-        android:id="@+id/graph" />
-
-    <Button
-        style="@style/button"
-        android:layout_width="179dp"
-        android:layout_height="wrap_content"
-        android:text="@string/startMonitoring"
-        android:id="@+id/btn_monitoring"
-        android:layout_marginTop="15dp"
-        android:layout_gravity="center"/>
+        android:id="@+id/graph"
+        android:layout_weight="0.68" />
 
 </LinearLayout>

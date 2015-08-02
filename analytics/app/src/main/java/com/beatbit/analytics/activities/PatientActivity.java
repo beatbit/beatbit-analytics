@@ -1,6 +1,7 @@
-package com.beatbit.analytics;
+package com.beatbit.analytics.activities;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -8,13 +9,16 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.beatbit.analytics.Patient;
+import com.beatbit.analytics.R;
+
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 
 public class PatientActivity extends ActionBarActivity {
@@ -33,6 +37,16 @@ public class PatientActivity extends ActionBarActivity {
 
         ListView patientListView = (ListView) findViewById(R.id.lv_patients);
         patientListView.setAdapter(adapter = new PatientAdapter(this));
+
+        patientListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                // Start the monitoring activity
+                Intent intent = new Intent(PatientActivity.this, MonitorActivity.class);
+                intent.putExtra("patient", patients.get(position));
+                startActivity(intent);
+            }
+        });
     }
 
     @Override
