@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -13,7 +14,9 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.beatbit.analytics.AzureClient;
 import com.beatbit.analytics.Patient;
 import com.beatbit.analytics.R;
 
@@ -22,6 +25,7 @@ import java.util.List;
 
 
 public class PatientActivity extends ActionBarActivity {
+    private static final String TAG = "activities";
     private PatientAdapter adapter;
     private List<Patient> patients;
 
@@ -30,23 +34,32 @@ public class PatientActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_patient);
 
-        patients = new ArrayList<Patient>();
+        try {
 
-        patients.add(new Patient("Rahul", 90));
-        patients.add(new Patient("Daniel", 44));
+            // Read all patients from azure
+            new AzureClient(this).getPatients(new AzureClient.AzureClientListener() {
+                @Override
+                public void onPatientsLoaded(final List<Patient> patients) {
+                    PatientActivity.this.patients = patients;
 
-        ListView patientListView = (ListView) findViewById(R.id.lv_patients);
-        patientListView.setAdapter(adapter = new PatientAdapter(this));
+                    ListView patientListView = (ListView) findViewById(R.id.lv_patients);
+                    patientListView.setAdapter(adapter = new PatientAdapter(PatientActivity.this));
 
-        patientListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                // Start the monitoring activity
-                Intent intent = new Intent(PatientActivity.this, PatientMonitorActivity.class);
-                intent.putExtra("patient", patients.get(position));
-                startActivity(intent);
-            }
-        });
+                    patientListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                        @Override
+                        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                            // Start the monitoring activity
+                            Intent intent = new Intent(PatientActivity.this, PatientMonitorActivity.class);
+                            intent.putExtra("patient", patients.get(position));
+                            startActivity(intent);
+                        }
+                    });
+                }
+            });
+
+        } catch(Exception e) {
+            Log.e(TAG, Log.getStackTraceString(e));
+        }
     }
 
     @Override
@@ -58,10 +71,6 @@ public class PatientActivity extends ActionBarActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-
-        if (id == R.id.action_settings) {
-            return true;
-        }
 
         return super.onOptionsItemSelected(item);
     }

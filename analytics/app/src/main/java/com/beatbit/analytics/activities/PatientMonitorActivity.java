@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -17,11 +18,13 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.beatbit.analytics.AzureClient;
 import com.beatbit.analytics.Patient;
 import com.beatbit.analytics.fragments.AverageRatesFragment;
 import com.beatbit.analytics.fragments.EmergencyLogFragment;
 import com.beatbit.analytics.fragments.LiveDataFragment;
 import com.beatbit.analytics.R;
+import com.microsoft.windowsazure.mobileservices.MobileServiceClient;
 
 
 public class PatientMonitorActivity extends ActionBarActivity {
@@ -34,6 +37,12 @@ public class PatientMonitorActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_patient_monitor);
+
+        try {
+            new AzureClient(this);
+        } catch(Exception e) {
+            Log.e("analytics", Log.getStackTraceString(e));
+        }
 
         patient = (Patient)getIntent().getSerializableExtra("patient");
 
