@@ -1,5 +1,6 @@
 package com.beatbit.analytics.activities;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v4.app.Fragment;
@@ -16,6 +17,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.beatbit.analytics.Patient;
 import com.beatbit.analytics.fragments.AverageRatesFragment;
 import com.beatbit.analytics.fragments.EmergencyLogFragment;
 import com.beatbit.analytics.fragments.LiveDataFragment;
@@ -26,11 +28,14 @@ public class PatientMonitorActivity extends ActionBarActivity {
     private CharSequence title;
     private DrawerLayout drawerLayout;
     private ActionBarDrawerToggle toggle;
+    private Patient patient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_patient_monitor);
+
+        patient = (Patient)getIntent().getSerializableExtra("patient");
 
         title = getTitle();
 
@@ -53,6 +58,9 @@ public class PatientMonitorActivity extends ActionBarActivity {
                 }
                 else if(items[position].equals(getString(R.string.emergencies))) {
                     setContent(new EmergencyLogFragment());
+                }
+                else if(items[position].equals(getString(R.string.patients))) {
+                    startActivity(new Intent(PatientMonitorActivity.this, PatientActivity.class));
                 }
 
                 drawerLayout.closeDrawer(Gravity.LEFT);

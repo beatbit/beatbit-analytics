@@ -36,10 +36,13 @@
     
     <string name="past">Heart Log</string>
     <string name="live">Live Heart Rate</string>
+    <string name="patients">My Patients</string>
     <string-array name="nav_items">
         <item name="live">@string/live</item>
         <item name="past">@string/past</item>
         <item name="emergencies">@string/emergencies</item>
+        <item name=""></item>
+        <item name="patients">@string/patients</item>
     </string-array>
 
 <!-- TODO: Remove or change this placeholder text -->

@@ -42,7 +42,7 @@ public class PatientActivity extends ActionBarActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 // Start the monitoring activity
-                Intent intent = new Intent(PatientActivity.this, MonitorActivity.class);
+                Intent intent = new Intent(PatientActivity.this, PatientMonitorActivity.class);
                 intent.putExtra("patient", patients.get(position));
                 startActivity(intent);
             }
