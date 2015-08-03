@@ -1,12 +1,18 @@
 package com.beatbit.analytics.activities;
 
+import android.app.AlertDialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Color;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -17,11 +23,16 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.beatbit.analytics.AzureClient;
+import com.beatbit.analytics.Constants;
+import com.beatbit.analytics.Emergency;
+import com.beatbit.analytics.MonitorService;
 import com.beatbit.analytics.Patient;
 import com.beatbit.analytics.fragments.AverageRatesFragment;
 import com.beatbit.analytics.fragments.EmergencyLogFragment;
 import com.beatbit.analytics.fragments.LiveDataFragment;
 import com.beatbit.analytics.R;
+import com.microsoft.windowsazure.mobileservices.MobileServiceClient;
 
 
 public class PatientMonitorActivity extends ActionBarActivity {
@@ -29,13 +40,52 @@ public class PatientMonitorActivity extends ActionBarActivity {
     private DrawerLayout drawerLayout;
     private ActionBarDrawerToggle toggle;
     private Patient patient;
+    private BroadcastReceiver broadcastReceiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_patient_monitor);
 
-        patient = (Patient)getIntent().getSerializableExtra("patient");
+        startService(new Intent(this, MonitorService.class));
+
+        patient = (Patient)getIntent().getSerializableExtra(Constants.PATIENT);
+
+        broadcastReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                String victimID = intent.getStringExtra(Constants.PATIENT_ID);
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(PatientMonitorActivity.this);
+                builder.setTitle("Possible Cardiac Arrest Detected!");
+                builder.setMessage(victimID + " may have just have a cardiac arrest or another heart malfunction!");
+                builder.setPositiveButton("Ok!", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                });
+                builder.show();
+                stopService(new Intent(PatientMonitorActivity.this, MonitorService.class));
+                unregisterReceiver(broadcastReceiver);
+            }
+        };
+
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(Constants.ARREST);
+
+        registerReceiver(broadcastReceiver, intentFilter);
+
+        try {
+//            Emergency ems = new Emergency();
+//            ems.setPatientid(patient.getId());
+//            ems.setDescription("this is an emergency");
+//
+//            new AzureClient(this).addEmergency(ems);
+        } catch(Exception e) {
+            Log.e("analytics", Log.getStackTraceString(e));
+        }
+
 
         title = getTitle();
 
@@ -68,6 +118,13 @@ public class PatientMonitorActivity extends ActionBarActivity {
         });
 
         setContent(new LiveDataFragment());
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        stopService(new Intent(this, MonitorService.class));
+        unregisterReceiver(broadcastReceiver);
     }
 
     private void setUpDrawerLayout() {
@@ -106,6 +163,7 @@ public class PatientMonitorActivity extends ActionBarActivity {
     public void setContent(Fragment fragment) {
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction()
+                .addToBackStack("")
                 .replace(R.id.container, fragment)
                 .commit();
     }
@@ -120,4 +178,7 @@ public class PatientMonitorActivity extends ActionBarActivity {
         return true;
     }
 
+    public Patient getPatient() {
+        return patient;
+    }
 }
