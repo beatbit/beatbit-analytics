@@ -33,8 +33,8 @@ public class AverageRatesFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState) {
         averageHeartRates = new ArrayList<AverageHeartRate>();
 
-        averageHeartRates.add(new AverageHeartRate("5/17/15", 66));
-        averageHeartRates.add(new AverageHeartRate("6/5/15", 54));
+        averageHeartRates.add(new AverageHeartRate("8/2/15", 75));
+        averageHeartRates.add(new AverageHeartRate("8/1/15", 67));
 
         View inflatedView = inflater.inflate(R.layout.fragment_average_rates, container, false);
 

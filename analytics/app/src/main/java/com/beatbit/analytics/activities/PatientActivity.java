@@ -1,7 +1,10 @@
 package com.beatbit.analytics.activities;
 
+import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
+import android.os.CountDownTimer;
+import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -14,14 +17,14 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
+import com.beatbit.analytics.AnalyticsApp;
 import com.beatbit.analytics.AzureClient;
-import com.beatbit.analytics.Emergency;
+import com.beatbit.analytics.Constants;
+import com.beatbit.analytics.MonitorService;
 import com.beatbit.analytics.Patient;
 import com.beatbit.analytics.R;
 
-import java.util.ArrayList;
 import java.util.List;
 
 
@@ -35,12 +38,17 @@ public class PatientActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_patient);
 
+
         try {
+            AzureClient c = new AzureClient(this);
+
             // Read all patients from azure
             new AzureClient(this).getPatients(new AzureClient.AzureClientListener() {
                 @Override
                 public void onLoaded(final Object object) {
                     PatientActivity.this.patients = (List<Patient>) object;
+
+                    ((AnalyticsApp) getApplication()).setPatients(patients);
 
                     ListView patientListView = (ListView) findViewById(R.id.lv_patients);
                     patientListView.setAdapter(adapter = new PatientAdapter(PatientActivity.this));
@@ -50,7 +58,7 @@ public class PatientActivity extends ActionBarActivity {
                         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                             // Start the monitoring activity
                             Intent intent = new Intent(PatientActivity.this, PatientMonitorActivity.class);
-                            intent.putExtra("patient", patients.get(position));
+                            intent.putExtra(Constants.PATIENT, patients.get(position));
                             startActivity(intent);
                         }
                     });
@@ -90,7 +98,6 @@ public class PatientActivity extends ActionBarActivity {
             }
 
             ((TextView) inflatedView.findViewById(R.id.txtv_patientName)).setText(patients.get(position).getName());
-            ((TextView) inflatedView.findViewById(R.id.txtv_bpm)).setText(patients.get(position).getHeartrate() + " bpm");
 
             return inflatedView;
         }

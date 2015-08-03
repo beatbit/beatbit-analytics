@@ -27,9 +27,6 @@ public class AzureClient {
                 "RqIjTJBDLvuoMcTlsTBDtWkqTREmcJ72",
                 context);
 
-        List<Emergency> ems = new ArrayList<Emergency>();
-        ems.add(new Emergency("5/18/15", "a bad one"));
-
         patientTable = azureClient.getTable(Patient.class);
         emergencyTable = azureClient.getTable(Emergency.class);
     }

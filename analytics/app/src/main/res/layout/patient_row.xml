@@ -47,12 +47,6 @@
                     android:text="Patient Name"
                     android:id="@+id/txtv_patientName" />
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textAppearance="?android:attr/textAppearanceSmall"
-                    android:text="80 bpm"
-                    android:id="@+id/txtv_bpm" />
 
             </LinearLayout>
         </RelativeLayout>
